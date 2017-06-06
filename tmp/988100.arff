@@ -1,0 +1,18 @@
+@relation 406100
+
+@attribute follower numeric
+@attribute followed numeric
+@attribute favcount numeric
+@attribute defaultimage {false,true}
+@attribute lengthUserName numeric
+@attribute lengthDescName numeric
+@attribute ratioFollowerFollowed numeric
+@attribute getReputation numeric
+@attribute AgeOfAccount numeric
+@attribute FollowingRate numeric
+@attribute CountOfTweets numeric
+@attribute NumberOfTPerDay numeric
+@attribute Type {Human,Bot}
+
+@data
+3860716,16398,313,false,20,157,235.0,0.9957706,56116,68.79884524912681,63987,27.368263,Human

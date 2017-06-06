@@ -1,0 +1,16 @@
+jdbcDriver=org.gjt.mm.mysql.Driver
+jdbcURL=jdbc:mysql://localhost:3306/Twitter
+specific data types
+string,getString()= 0; -->nominal
+boolean,getBoolean() = 1; -->nominal
+double,getDouble() = 2; -->numeric
+byte,getByte() = 3; -->numeric
+short,getByte()= 4; -->numeric
+int,getInteger() = 5; -->numeric
+long,getLong() = 6; -->numeric
+gloat,getFloat() = 7; -->numeric
+date,getDate() = 8; -->date
+varchar=0
+float=2
+tinyint=3
+int=5
