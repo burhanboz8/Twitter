@@ -26,7 +26,7 @@ public class MainClass {
 	private static final int SERVER_PORT = 3547;
 	public static void main(String[] args) throws Exception  {
 		Fetcher fetcher = new Fetcher();
-
+        DatabaseHelper helper = new DatabaseHelper();
 		port(SERVER_PORT);
 		get("/user", (req,rep)->{
 			String result;
@@ -67,11 +67,16 @@ public class MainClass {
 	        String userName;
             try{
                 String link = req.queryParams("link");
+                String typeStr = req.queryParams("type");
+                if(typeStr == null ){
+                    return responseJson(0,"Required Type",null);
+                }
                 userName = link.substring(link.lastIndexOf('/')+1);
                 TwitterUser user = fetcher.getUser(userName);
                 if(user.getDisplayName()!=null){
                     userName = user.getDisplayName();
                 }
+                helper.saveFeedback(link,userName,Integer.parseInt(typeStr));
                 //TODO veritabanina kayit et
                 return responseJson(1,null,null);
             }catch (Exception ex){

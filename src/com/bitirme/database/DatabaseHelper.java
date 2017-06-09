@@ -60,7 +60,11 @@ public class DatabaseHelper {
 		try{
 			int id = getFeedbackId(link);
 			int value = getFeedbackValue(id);
-			PreparedStatement st = conn.prepareStatement("update ");
+			value += val;
+			PreparedStatement st = conn.prepareStatement("update VotedNames set value = ? where id = ?");
+			st.setInt(1,value);
+			st.setInt(2,id);
+			st.executeUpdate();
 			//Kullanici veritabaninda var ise update yapicaz. Yoksa insert yapicaz
 		}catch (IdNotFoundException ex){
 			PreparedStatement st = conn.prepareStatement("insert into VotedNames(name,link,count) values (?,?,?)");
