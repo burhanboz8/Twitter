@@ -96,7 +96,8 @@ public class Fetcher {
 		Twitter twitter = TwitterHelper.getTwitter();
 		User user = twitter.showUser(userName);
 		TwitterUser us = new TwitterUser();
-		
+
+		us.setDisplayName(user.getScreenName());
 		Calendar cal = Calendar.getInstance();
 		
 		us.setFollower(user.getFollowersCount());
@@ -108,11 +109,6 @@ public class Fetcher {
 		us.setLengthUserName(user.getName().length());
 		us.setLengthDescriptionName(user.getDescription().length());
 		us.setType(UserType.Human);
-		// us.setAgeOfAcount(ageOfAcount);
-		// us.setCountOfTweets(countOfTweets);
-		// us.setFollowingRate(followingRate);
-		// us.setNumberOfTPerDay(numberOfTPerDay);
-		// us.setNumberOfTPerWeek(numberOfTPerWeek);
 		us.setReputationOfUser((float) us.getFollower() / (float) (us.getFollower() + (float) us.getFollowed()));
 		if(us.getFollowed() != 0){
 			us.setRatioFollowerFollowed((us.getFollower() / us.getFollowed()));
@@ -121,18 +117,12 @@ public class Fetcher {
 			us.setRatioFollowerFollowed(us.getFollower());
 		}
 		us.setAgeOfAccount((cal.getTimeInMillis() - user.getCreatedAt().getTime()) / 3600000); // type of hours
-		//System.out.println((cal.getTimeInMillis() - user.getCreatedAt().getTime()) / 86400000);  // type of day
 		us.setFollowingRate((double)us.getFollower() / (double)us.getAgeOfAccount());
 		us.setCountOfTweets(user.getStatusesCount());
 		us.setNumberOfTPerDay((float)us.getCountOfTweets() / (float)((cal.getTimeInMillis() - user.getCreatedAt().getTime()) / 86400000));
 		us.setNumberOfTPerWeek(((float)us.getCountOfTweets() / (float)((cal.getTimeInMillis() - user.getCreatedAt().getTime()) / 86400000)) * 7);
 		us.setName(userName);
-		/*try {
-			return helper.save(us);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return -1;
-		}*/
+
 		return us;
 	}
 	private int fetchUser() throws TwitterException {

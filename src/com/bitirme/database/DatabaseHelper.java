@@ -29,14 +29,49 @@ public class DatabaseHelper {
 	public DatabaseHelper() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/Twitter", "root", "1burhan234");
+			conn = DriverManager.getConnection("jdbc:mysql://139.162.175.54:3306/Twitter", "root", "tellioglu");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
+	public int getFeedbackId(String link) throws SQLException,IdNotFoundException{
+		PreparedStatement st = conn.prepareStatement("Select id from VotedNames where link = ?");
+		st.setString(1,link);
+		ResultSet set = st.executeQuery();
+		if(set.first()){
+			return set.getInt(0);
+		}else{
+			throw new IdNotFoundException();
+		}
+	}
+	public int getFeedbackValue(int id) throws SQLException,IdNotFoundException{
+		PreparedStatement st = conn.prepareStatement("Select val from VotedNames where id = ?");
+		st.setInt(1,id);
+		ResultSet set = st.executeQuery();
+		if(set.first()){
+			return set.getInt(0);
+		}else{
+			throw new IdNotFoundException();
+		}
+	}
+	public  void saveFeedback(String link,String username,int val) throws SQLException{
+		try{
+			int id = getFeedbackId(link);
+			int value = getFeedbackValue(id);
+			PreparedStatement st = conn.prepareStatement("update ");
+			//Kullanici veritabaninda var ise update yapicaz. Yoksa insert yapicaz
+		}catch (IdNotFoundException ex){
+			PreparedStatement st = conn.prepareStatement("insert into VotedNames(name,link,count) values (?,?,?)");
+			st.setString(1,username);
+			st.setString(2,link);
+			st.setInt(3,val);
+			st.executeUpdate();
 
+		}
+
+	}
 	public boolean save(Tweet tweet) throws SQLException {
 		PreparedStatement st = conn.prepareStatement(
 				"insert into Tweet(context,linkCount,rtCount,htCount,favCount,date,dateDiff,userId,numberOfCharacters,"
@@ -206,5 +241,8 @@ public class DatabaseHelper {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	public class IdNotFoundException extends Exception{
+
 	}
 }

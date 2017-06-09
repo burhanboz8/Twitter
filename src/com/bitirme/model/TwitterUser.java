@@ -9,12 +9,22 @@ public class TwitterUser {
 		this.id = id;
 	}
 	private String name;
+	private String displayName;
 	private UserType type;
 	private long twitterId;
 	private int follower;
 	private int followed;
 	private int favCount;
 	private String location;
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 	private boolean defaultImage;
 	private int lengthUserName;
 	private int lengthDescriptionName;
