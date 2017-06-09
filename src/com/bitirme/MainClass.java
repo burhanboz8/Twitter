@@ -91,9 +91,12 @@ public class MainClass {
 	        String userName;
             try{
                 String link = req.queryParams("link");
+                if(link==null){
+                    return responseJson(0,"Twitter user url required! such as https://twitter.com/realdonaldtrump",null);
+                }
                 String typeStr = req.queryParams("type");
                 if(typeStr == null ){
-                    return responseJson(0,"Required Type",null);
+                    return responseJson(0,"Required Type(Human for 1, Bot for 0)",null);
                 }
                 userName = link.substring(link.lastIndexOf('/')+1);
                 TwitterUser user = fetcher.getUser(userName);
