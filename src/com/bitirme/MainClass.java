@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.*;
 
 import com.bitirme.classification.Classification;
@@ -24,23 +25,28 @@ import weka.classifiers.Evaluation;
 
 public class MainClass {
 	private static final int SERVER_PORT = 3547;
-	public static void main(String[] args) throws Exception  {
+	public static void main(String[] args) {
 		Fetcher fetcher = new Fetcher();
         DatabaseHelper helper = new DatabaseHelper();
 		port(SERVER_PORT);
+		get("/hello",(req,rep) ->{
+		   return "Hello friend!";
+        });
 		get("/user", (req,rep)->{
 			String result;
 			int found = 0;
 			DatabaseHelper dbhelp = new DatabaseHelper();
 			String link = req.queryParams("link");
 			if(link==null){
-				return "User link can not be null!";
+			    return responseJson(0,"Twitter user url required! such as https://twitter.com/realdonaldtrump",null);
 			}
 			String userName = link.substring(link.lastIndexOf('/')+1);
+			String displayName = null;
 			try{
 				found = dbhelp.searchUser(userName);
 				if (found == 2){
                     TwitterUser user = fetcher.getUser(userName);
+                    displayName = user.getDisplayName();
                     String arffFilePath = PrepareData.createUserFile(user);
                     Classification cls = new Classification();
                     result = cls.predicate(arffFilePath);
@@ -49,17 +55,35 @@ public class MainClass {
                 }else
                     result = "Bot";
 
-				
 			}catch(TwitterException ex){
 				ex.printStackTrace();
-				return "Default";
-			}
+				return responseJson(0,"Url is not recognized!",null);
+			}catch (SQLException ex){
+			    ex.printStackTrace();
+			    return responseJson(0,"Could not complete the request",null);
+            }catch (NullPointerException ex){
+			    ex.printStackTrace();
+                return responseJson(0,"Could not complete the request",null);
+            }
 			
 			if(result.equalsIgnoreCase("Human") ){
-				return "Human";
+			    Map<String,String> mp = new HashMap<>();
+			    mp.put("type","Human");
+			    if(displayName!=null){
+                    mp.put("name",displayName);
+                }else{
+			        mp.put("name",userName);
+                }
+				return responseJson(1,null,mp);
 			}else{
-				//System.out.println(result);
-				return "Bot";
+                Map<String,String> mp = new HashMap<>();
+                mp.put("type","Bot");
+                if(displayName!=null){
+                    mp.put("name",displayName);
+                }else{
+                    mp.put("name",userName);
+                }
+                return responseJson(1,null,mp);
 			}
 		});
 
@@ -77,7 +101,7 @@ public class MainClass {
                     userName = user.getDisplayName();
                 }
                 helper.saveFeedback(link,userName,Integer.parseInt(typeStr));
-                //TODO veritabanina kayit et
+
                 return responseJson(1,null,null);
             }catch (Exception ex){
 	           return responseJson(0,"Wrong link!",null);
