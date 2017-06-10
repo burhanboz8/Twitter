@@ -29,7 +29,7 @@ public class DatabaseHelper {
 	public DatabaseHelper() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://139.162.175.54:3306/Twitter", "root", "tellioglu");
+			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Twitter", "root", "tellioglu");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -41,17 +41,17 @@ public class DatabaseHelper {
 		st.setString(1,link);
 		ResultSet set = st.executeQuery();
 		if(set.first()){
-			return set.getInt(0);
+			return set.getInt(1);
 		}else{
 			throw new IdNotFoundException();
 		}
 	}
 	public int getFeedbackValue(int id) throws SQLException,IdNotFoundException{
-		PreparedStatement st = conn.prepareStatement("Select val from VotedNames where id = ?");
+		PreparedStatement st = conn.prepareStatement("Select count from VotedNames where id = ?");
 		st.setInt(1,id);
 		ResultSet set = st.executeQuery();
 		if(set.first()){
-			return set.getInt(0);
+			return set.getInt(1);
 		}else{
 			throw new IdNotFoundException();
 		}
@@ -61,7 +61,7 @@ public class DatabaseHelper {
 			int id = getFeedbackId(link);
 			int value = getFeedbackValue(id);
 			value += val;
-			PreparedStatement st = conn.prepareStatement("update VotedNames set value = ? where id = ?");
+			PreparedStatement st = conn.prepareStatement("update VotedNames set count = ? where id = ?");
 			st.setInt(1,value);
 			st.setInt(2,id);
 			st.executeUpdate();
@@ -226,7 +226,6 @@ public class DatabaseHelper {
 	}
 
 	public  int searchUser(String username) throws SQLException {
-
 	    PreparedStatement st = conn.prepareStatement(("select name,type from User "));
 	    ResultSet rs = st.executeQuery();
 	    while (rs.next()){

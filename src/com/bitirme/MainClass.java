@@ -25,14 +25,26 @@ import weka.classifiers.Evaluation;
 
 public class MainClass {
 	private static final int SERVER_PORT = 3547;
+    private static  ModelUpdater updater = new ModelUpdater();
 	public static void main(String[] args) {
 		Fetcher fetcher = new Fetcher();
         DatabaseHelper helper = new DatabaseHelper();
+        updater.start();
 		port(SERVER_PORT);
 		get("/hello",(req,rep) ->{
 		   return "Hello friend!";
         });
+		get("/status",(req,rep) ->{
+		    if(updater.isLock()){
+		        return "System is currently updating...";
+            }else{
+		        return "System is not locked!";
+            }
+        });
 		get("/user", (req,rep)->{
+		    if(updater.isLock()){
+		        return responseJson(-1,"Server currently updating..",null);
+            }
 			String result;
 			int found = 0;
 			DatabaseHelper dbhelp = new DatabaseHelper();
@@ -88,6 +100,9 @@ public class MainClass {
 		});
 
 	    get("/feedback",(req,res) ->{
+            if(updater.isLock()){
+                return responseJson(-1,"Server currently updating..",null);
+            }
 	        String userName;
             try{
                 String link = req.queryParams("link");
@@ -104,9 +119,10 @@ public class MainClass {
                     userName = user.getDisplayName();
                 }
                 helper.saveFeedback(link,userName,Integer.parseInt(typeStr));
-
+                System.out.println("Request geldiii"+link);
                 return responseJson(1,null,null);
             }catch (Exception ex){
+                ex.printStackTrace();
 	           return responseJson(0,"Wrong link!",null);
            }
         });
