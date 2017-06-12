@@ -1,17 +1,16 @@
 package com.bitirme.classification;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import com.bitirme.model.TwitterUser;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 
-import com.bitirme.model.TwitterUser;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
 
 public class PrepareData {
 	public static String createUserCSVFile(List<TwitterUser> lst){
@@ -89,7 +88,7 @@ public class PrepareData {
 			 CSVLoader loader = new CSVLoader();
 			 loader.setSource(new File(csvFilePath));
 			 Instances data = loader.getDataSet();
-
+			 System.out.println("TEST");
 			 // save ARFF
 			 ArffSaver saver = new ArffSaver();
 			 saver.setInstances(data);
