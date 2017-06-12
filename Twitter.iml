@@ -10,7 +10,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-core:4.0.4" level="project" />
-    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.21" level="project" />
     <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:weka-stable:3.8.0" level="project" />
     <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka.thirdparty:java-cup-11b:2015.03.26" level="project" />
     <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka.thirdparty:java-cup-11b-runtime:2015.03.26" level="project" />
@@ -52,5 +51,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-servlet:9.4.4.v20170414" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.4.v20170414" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.21" level="project" />
+    <orderEntry type="library" name="mysql:mysql-connector-java:5.1.21" level="project" />
   </component>
 </module>

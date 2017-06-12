@@ -1,29 +1,14 @@
 package com.bitirme.core;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import org.omg.Messaging.SyncScopeHelper;
-
-import java.text.ParseException;
-
 import com.bitirme.database.DatabaseHelper;
 import com.bitirme.model.Tweet;
 import com.bitirme.model.TwitterUser;
 import com.bitirme.model.UserType;
-import com.bitirme.util.StringUtils;
+import twitter4j.*;
 
-import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.List;
 
 public class Fetcher {
 	private String userName;
@@ -92,14 +77,14 @@ public class Fetcher {
 		}
 		return wordCount;
 	}
-	public TwitterUser getUser(String userName) throws TwitterException{
+	public TwitterUser getUser(String userName,UserType type) throws TwitterException{
 		Twitter twitter = TwitterHelper.getTwitter();
 		User user = twitter.showUser(userName);
 		TwitterUser us = new TwitterUser();
 
 		us.setDisplayName(user.getScreenName());
 		Calendar cal = Calendar.getInstance();
-		
+
 		us.setFollower(user.getFollowersCount());
 		us.setFollowed(user.getFriendsCount());
 		us.setFavCount(user.getFavouritesCount());
@@ -108,11 +93,11 @@ public class Fetcher {
 		us.setDefaultImage(user.isDefaultProfileImage());
 		us.setLengthUserName(user.getName().length());
 		us.setLengthDescriptionName(user.getDescription().length());
-		us.setType(UserType.Human);
+		us.setType(type);
 		us.setReputationOfUser((float) us.getFollower() / (float) (us.getFollower() + (float) us.getFollowed()));
 		if(us.getFollowed() != 0){
 			us.setRatioFollowerFollowed((us.getFollower() / us.getFollowed()));
-		}		
+		}
 		else{
 			us.setRatioFollowerFollowed(us.getFollower());
 		}
@@ -125,6 +110,10 @@ public class Fetcher {
 
 		return us;
 	}
+	public TwitterUser getUser(String userName) throws TwitterException{
+		return getUser(userName,UserType.Human);
+	}
+
 	private int fetchUser() throws TwitterException {
 		Twitter twitter = TwitterHelper.getTwitter();
 		User user = twitter.showUser(userName);

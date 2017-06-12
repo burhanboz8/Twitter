@@ -1,27 +1,19 @@
 package com.bitirme.database;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.bitirme.core.Fetcher;
 import com.bitirme.model.Context;
 import com.bitirme.model.Tweet;
 import com.bitirme.model.TwitterUser;
 import com.bitirme.model.UserType;
 import com.bitirme.util.StringUtils;
+import twitter4j.TwitterException;
 
-import weka.core.Instances;
-import weka.experiment.InstanceQuery;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper {
 	private Connection conn = null;
@@ -29,7 +21,7 @@ public class DatabaseHelper {
 	public DatabaseHelper() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Twitter", "root", "tellioglu");
+			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Twitter", "root", "1burhan234");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -224,6 +216,44 @@ public class DatabaseHelper {
 
 		
 	}
+	public void updateUsers(int threshold) throws SQLException, TwitterException {
+        Fetcher fetcher = new Fetcher();
+        DatabaseHelper dbhelper = new DatabaseHelper();
+        TwitterUser user = new TwitterUser();
+		PreparedStatement st = conn.prepareStatement(("select name,count from VotedNames"));
+		ResultSet rs = st.executeQuery();
+		while (rs.next()){
+            PreparedStatement st1 = conn.prepareStatement(("delete from User  where name = ?"));
+            st1.setString(1,rs.getString("name"));
+		    if (rs.getInt("count") >= threshold){
+		         user = fetcher.getUser(rs.getString("name"));
+                if (userExits(user.getName())){
+                    st1.executeUpdate();
+                    dbhelper.save(user);
+                }else{
+                    dbhelper.save(user);
+                }
+            }else if (rs.getInt("count") <= (-threshold)){
+                user = fetcher.getUser(rs.getString("name"),UserType.Bot);
+                if (userExits(user.getName())){
+                    st1.executeUpdate();
+                    dbhelper.save(user);
+                }else{
+                    dbhelper.save(user);
+                }
+            }
+        }
+	}
+
+	public boolean userExits(String name) throws SQLException{
+	    PreparedStatement st = conn.prepareStatement(("select name from User where name =?"));
+	    st.setString(1,name);
+	    ResultSet rs = st.executeQuery();
+	    if (rs.first())
+            return true;
+        else
+            return false;
+    }
 
 	public  int searchUser(String username) throws SQLException {
 	    PreparedStatement st = conn.prepareStatement(("select name,type from User "));
@@ -233,7 +263,7 @@ public class DatabaseHelper {
                 return rs.getInt("type");
             }
         }
-        return 2;
+        return -1;
     }
 
 	public void closeConnection() {

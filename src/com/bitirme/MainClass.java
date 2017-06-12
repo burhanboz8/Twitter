@@ -1,27 +1,19 @@
 package com.bitirme;
-import static spark.Spark.*;
-
-
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.sql.SQLException;
-import java.util.*;
-
 import com.bitirme.classification.Classification;
 import com.bitirme.classification.PrepareData;
 import com.bitirme.core.Fetcher;
-import com.bitirme.core.NGram;
 import com.bitirme.database.DatabaseHelper;
 import com.bitirme.model.TwitterUser;
-
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
 import twitter4j.TwitterException;
-import weka.classifiers.Evaluation;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static spark.Spark.get;
+import static spark.Spark.port;
 
 public class MainClass {
 	private static final int SERVER_PORT = 3547;
@@ -31,9 +23,6 @@ public class MainClass {
         DatabaseHelper helper = new DatabaseHelper();
         updater.start();
 		port(SERVER_PORT);
-		get("/hello",(req,rep) ->{
-		   return "Hello friend!";
-        });
 		get("/status",(req,rep) ->{
 		    if(updater.isLock()){
 		        return "System is currently updating...";
@@ -56,7 +45,7 @@ public class MainClass {
 			String displayName = null;
 			try{
 				found = dbhelp.searchUser(userName);
-				if (found == 2){
+				if (found == -1){
                     TwitterUser user = fetcher.getUser(userName);
                     displayName = user.getDisplayName();
                     String arffFilePath = PrepareData.createUserFile(user);
@@ -119,7 +108,7 @@ public class MainClass {
                     userName = user.getDisplayName();
                 }
                 helper.saveFeedback(link,userName,Integer.parseInt(typeStr));
-                System.out.println("Request geldiii"+link);
+                //System.out.println("Request geldiii"+link);
                 return responseJson(1,null,null);
             }catch (Exception ex){
                 ex.printStackTrace();
