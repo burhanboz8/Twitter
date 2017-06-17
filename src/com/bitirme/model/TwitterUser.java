@@ -16,6 +16,144 @@ public class TwitterUser {
 	private int followed;
 	private int favCount;
 	private String location;
+	private float avgLinkCount;
+    private float avgRTCount;
+    private float avgHTCount;
+    private float avgFavCount;
+    private float avgDDifference;
+    private float avgNofChars;
+    private float avgNofWords;
+    private float avgNofCapitalization;
+    private float avgNofQuestionMark;
+    private float avgNofExclamationMark;
+    private float avgNofDotMark;
+    private float avgNofWhiteSpaces;
+    private float avgMaxWordLength;
+    private float avgMeanWordLength;
+    private boolean defaultImage;
+    private int lengthUserName;
+    private int lengthDescriptionName;
+    private int countOfTweets;
+    private double ratioFollowerFollowed;
+    private float reputationOfUser;
+    private double followingRate;
+    private float numberOfTPerDay;
+    private float numberOfTPerWeek;
+    private long  ageOfAccount;
+
+	public float getAvgLinkCount() {
+		return avgLinkCount;
+	}
+
+	public void setAvgLinkCount(float avgLinkCount) {
+		this.avgLinkCount = avgLinkCount;
+	}
+
+	public float getAvgRTCount() {
+		return avgRTCount;
+	}
+
+	public void setAvgRTCount(float avgRTCount) {
+		this.avgRTCount = avgRTCount;
+	}
+
+	public float getAvgHTCount() {
+		return avgHTCount;
+	}
+
+	public void setAvgHTCount(float avgHTCount) {
+		this.avgHTCount = avgHTCount;
+	}
+
+	public float getAvgFavCount() {
+		return avgFavCount;
+	}
+
+	public void setAvgFavCount(float avgFavCount) {
+		this.avgFavCount = avgFavCount;
+	}
+
+	public float getAvgDDifference() {
+		return avgDDifference;
+	}
+
+	public void setAvgDDifference(float avgDDifference) {
+		this.avgDDifference = avgDDifference;
+	}
+
+	public float getAvgNofChars() {
+		return avgNofChars;
+	}
+
+	public void setAvgNofChars(float avgNofChars) {
+		this.avgNofChars = avgNofChars;
+	}
+
+	public float getAvgNofWords() {
+		return avgNofWords;
+	}
+
+	public void setAvgNofWords(float avgNofWords) {
+		this.avgNofWords = avgNofWords;
+	}
+
+	public float getAvgNofCapitalization() {
+		return avgNofCapitalization;
+	}
+
+	public void setAvgNofCapitalization(float avgNofCapitalization) {
+		this.avgNofCapitalization = avgNofCapitalization;
+	}
+
+	public float getAvgNofQuestionMark() {
+		return avgNofQuestionMark;
+	}
+
+	public void setAvgNofQuestionMark(float avgNofQuestionMark) {
+		this.avgNofQuestionMark = avgNofQuestionMark;
+	}
+
+	public float getAvgNofExclamationMark() {
+		return avgNofExclamationMark;
+	}
+
+	public void setAvgNofExclamationMark(float avgNofExclamationMark) {
+		this.avgNofExclamationMark = avgNofExclamationMark;
+	}
+
+	public float getAvgNofDotMark() {
+		return avgNofDotMark;
+	}
+
+	public void setAvgNofDotMark(float avgNofDotMark) {
+		this.avgNofDotMark = avgNofDotMark;
+	}
+
+	public float getAvgNofWhiteSpaces() {
+		return avgNofWhiteSpaces;
+	}
+
+	public void setAvgNofWhiteSpaces(float avgNofWhiteSpaces) {
+		this.avgNofWhiteSpaces = avgNofWhiteSpaces;
+	}
+
+	public float getAvgMaxWordLength() {
+		return avgMaxWordLength;
+	}
+
+	public void setAvgMaxWordLength(float avgMaxWordLength) {
+		this.avgMaxWordLength = avgMaxWordLength;
+	}
+
+	public float getAvgMeanWordLength() {
+		return avgMeanWordLength;
+	}
+
+	public void setAvgMeanWordLength(float avgMeanWordLength) {
+		this.avgMeanWordLength = avgMeanWordLength;
+	}
+
+
 
 	public String getDisplayName() {
 		return displayName;
@@ -25,16 +163,7 @@ public class TwitterUser {
 		this.displayName = displayName;
 	}
 
-	private boolean defaultImage;
-	private int lengthUserName;
-	private int lengthDescriptionName;
-	private int countOfTweets;
-	private double ratioFollowerFollowed;
-	private float reputationOfUser;
-	private double followingRate;
-	private float numberOfTPerDay;
-	private float numberOfTPerWeek;
-	private long  ageOfAccount;
+
 	public int getLengthUserName() {
 		return lengthUserName;
 	}

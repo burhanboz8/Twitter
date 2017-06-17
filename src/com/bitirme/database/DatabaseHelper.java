@@ -97,6 +97,32 @@ public class DatabaseHelper {
 			return true;
 		return false;
 	}
+	public void saveTweets(Tweet tweet, String userName) throws SQLException {
+		PreparedStatement st = conn.prepareStatement(
+				"insert into TemporaryTweets(name,linkCount,rtCount,htCount,favCount,dDifference,nofChars,"
+						+ "nofWords,nofCapitalization,nofQuestionMark,nofExclamationMark,nofDotMark"
+						+ ",maxWordLength,nofWhiteSpace,meanWordLength)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+		st.setString(1, userName);
+		st.setFloat(2, tweet.getLinkCount());
+		st.setFloat(3, tweet.getRetweetCount());
+		st.setFloat(4, tweet.getHashtagCount());
+		st.setFloat(5, tweet.getFavoriteCount());
+		//st.setDate(6, new java.sql.Date(tweet.getDate().getTime()));
+		st.setFloat(6, tweet.getDateDiff());
+		//st.setInt(8, tweet.getUserId());
+		st.setFloat(7, tweet.getNumberOfCharacters());
+		st.setFloat(8, tweet.getNumberOfWords());
+		st.setFloat(9, tweet.getNumberOfCapitalization());
+		st.setFloat(10, tweet.getNumberOfQuestionMark());
+		st.setFloat(11, tweet.getNumberOfExclamationMark());
+		st.setFloat(12, tweet.getNumberOfDotMark());
+		st.setFloat(13, tweet.getMaximumWordLength());
+		st.setFloat(15, tweet.getMeanWordLength());
+		st.setFloat(14, tweet.getNumberOfWhiteSpace());
+		st.executeUpdate();
+	}
 
 	public int save(TwitterUser user) throws SQLException {
 		PreparedStatement st = conn.prepareStatement("insert into User(name,type,follower,followed,favCount,"
@@ -155,10 +181,23 @@ public class DatabaseHelper {
 			}else{
 				 type1 = UserType.Bot;
 			}
+			float avgLinkCount = set.getFloat(18);
+			float avgRTCount = set.getFloat(19);
+			float avgHTCount = set.getFloat(20);
+			float avgFavCount = set.getFloat(21);
+			float avgDDifference = set.getFloat(22);
+			float avgNofChars = set.getFloat(23);
+			float avgNofWords = set.getFloat(24);
+			float avgNofCapitalization = set.getFloat(25);
+			float avgNofQuestionMark = set.getFloat(26);
+			float avgNofExclamationMark = set.getFloat(27);
+			float avgNofDotMark = set.getFloat(28);
+			float avgMaxWordLength = set.getFloat(29);
+			float avgNofWhiteSpaces = set.getFloat(30);
+			float avgMeanWordLength = set.getFloat(31);
 				
 			
-		
-			//TODO butun ozellikleri twitter user sinifina ekle
+
 			TwitterUser usr = new TwitterUser();
 			usr.setFollower(follower);
 			usr.setFollowed(followed);
@@ -173,6 +212,22 @@ public class DatabaseHelper {
 			usr.setCountOfTweets(countOfTweets);
 			usr.setNumberOfTPerDay(numberOfTweetsPerDay);
 			usr.setType(type1);
+			usr.setAvgLinkCount(avgLinkCount);
+			usr.setAvgRTCount(avgRTCount);
+			usr.setAvgHTCount(avgHTCount);
+			usr.setAvgFavCount(avgFavCount);
+			usr.setAvgDDifference(avgDDifference);
+			usr.setAvgNofChars(avgNofChars);
+			usr.setAvgNofWords(avgNofWords);
+			usr.setAvgNofCapitalization(avgNofCapitalization);
+			usr.setAvgNofQuestionMark(avgNofQuestionMark);
+			usr.setAvgNofExclamationMark(avgNofExclamationMark);
+			usr.setAvgNofDotMark(avgNofDotMark);
+			usr.setAvgMaxWordLength(avgMaxWordLength);
+			usr.setAvgNofWhiteSpaces(avgNofWhiteSpaces);
+			usr.setAvgMeanWordLength(avgMeanWordLength);
+
+
 		
 			
 			list.add(usr);
@@ -207,14 +262,24 @@ public class DatabaseHelper {
 			System.out.println(count);
 			writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		
+	}
+//TODO get averages tweets from temporary table
+	public float avgTweets (String value, String userName ) throws SQLException{
+		float avgValue = 0;
+		PreparedStatement st = conn.prepareStatement("select name,avg("+value+") from TemporaryTweets where name = ?");
+		st.setString(1,userName);
+		ResultSet rs = st.executeQuery();
+		rs.first();
+			avgValue = rs.getFloat(2);
+			System.out.println(avgValue);
+
+		return avgValue;
 	}
 	public void updateUsers(int threshold) throws SQLException, TwitterException {
         Fetcher fetcher = new Fetcher();

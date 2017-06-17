@@ -7,6 +7,7 @@ import com.bitirme.model.UserType;
 import twitter4j.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class Fetcher {
 			return;
 		}
 		try {
-			fetchTweets(userId);
+			fetchTweets(userId,userName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,6 +82,8 @@ public class Fetcher {
 		Twitter twitter = TwitterHelper.getTwitter();
 		User user = twitter.showUser(userName);
 		TwitterUser us = new TwitterUser();
+		Fetcher fetch = new Fetcher();
+		DatabaseHelper dbhelp = new DatabaseHelper();
 
 		us.setDisplayName(user.getScreenName());
 		Calendar cal = Calendar.getInstance();
@@ -107,12 +110,38 @@ public class Fetcher {
 		us.setNumberOfTPerDay((float)us.getCountOfTweets() / (float)((cal.getTimeInMillis() - user.getCreatedAt().getTime()) / 86400000));
 		us.setNumberOfTPerWeek(((float)us.getCountOfTweets() / (float)((cal.getTimeInMillis() - user.getCreatedAt().getTime()) / 86400000)) * 7);
 		us.setName(userName);
+		//TODO fetch user tweets
+		try {
+			fetchTweets(1,userName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			us.setAvgFavCount(dbhelp.avgTweets("favCount",userName));
+			us.setAvgMeanWordLength(dbhelp.avgTweets("meanWordLength",userName));
+			us.setAvgNofWhiteSpaces(dbhelp.avgTweets("nofWhiteSpace",userName));
+			us.setAvgMaxWordLength(dbhelp.avgTweets("maxWordLength",userName));
+			us.setAvgNofDotMark(dbhelp.avgTweets("nofDotMark",userName));
+			us.setAvgNofExclamationMark(dbhelp.avgTweets("nofExclamationMark",userName));
+			us.setAvgNofQuestionMark(dbhelp.avgTweets("nofQuestionMark",userName));
+			us.setAvgNofCapitalization(dbhelp.avgTweets("nofCapitalization",userName));
+			us.setAvgNofWords(dbhelp.avgTweets("nofWords",userName));
+			us.setAvgNofChars(dbhelp.avgTweets("nofChars",userName));
+			us.setAvgDDifference(dbhelp.avgTweets("dDifference",userName));
+			us.setAvgHTCount(dbhelp.avgTweets("htCount",userName));
+			us.setAvgRTCount(dbhelp.avgTweets("rtCount",userName));
+			us.setAvgLinkCount(dbhelp.avgTweets("linkCount",userName));
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		return us;
 	}
 	public TwitterUser getUser(String userName) throws TwitterException{
 		return getUser(userName,UserType.Human);
 	}
+
 
 	private int fetchUser() throws TwitterException {
 		Twitter twitter = TwitterHelper.getTwitter();
@@ -149,31 +178,27 @@ public class Fetcher {
 		us.setNumberOfTPerWeek(((float)us.getCountOfTweets() / (float)((cal.getTimeInMillis() - user.getCreatedAt().getTime()) / 86400000)) * 7);
 		us.setName(userName);
 		us.setType(this.type);
-		/*try {
-			return helper.save(us);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return -1;
-		}*/
+
 		return 0;
 	}
 	
 	
 	
 
-	private void fetchTweets(int userId) throws TwitterException, IOException {
+	private void fetchTweets(int userId,String userName) throws TwitterException, IOException {
 		Twitter twitter = TwitterHelper.getTwitter();
 		int twitterPage = 0;
+		String name = null;
 		List<Status> status = null;
 		int tweetCounter = 0;
-		int tweetPageCount = 200 / 100;
+		int tweetPageCount = 100 / 100;
 		int total = 0;
 		int i = 0;
 		while ((status == null || status.size() != 0) && tweetCounter < tweetPageCount) {
 			Paging pagin = new Paging(++twitterPage, 100); // bir seferinde 100
 			Tweet tweet = new Tweet(); // tweet aliyo 
 			
-
+			System.out.println(userName);
 			status = twitter.getUserTimeline(userName, pagin);
 
 			for (i = 0; i < status.size(); i++) {
@@ -233,10 +258,10 @@ public class Fetcher {
 				//tweet.setText(StringUtils.replaceTurkishCharacters(status.get(i).getText()));
 				tweet.setNumberOfWords(countWords(status.get(i).getText()));
 				tweet.setNumberOfCharacters(status.get(i).getText().length());
-				tweet.setDate(status.get(i).getCreatedAt());
+				//tweet.setDate(status.get(i).getCreatedAt());
 				tweet.setDateDiff(status.get(i).getCreatedAt().getTime() / 1000);
 				tweet.setNumberOfCapitalization(upperCase);
-				System.out.println(status.get(i).getText());
+				//System.out.println(status.get(i).getText());
 				if (status.get(i).getURLEntities() != null) {
 					tweet.setLinkCount(status.get(i).getURLEntities().length);
 				}
@@ -258,6 +283,12 @@ public class Fetcher {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}*/
+				try{
+					helper.saveTweets(tweet,userName);
+				} catch (SQLException ex){
+					ex.printStackTrace();
+				}
+			//TODO save tweets temporary db calculate avg from that table
 			}
 			
 			
@@ -266,7 +297,7 @@ public class Fetcher {
 		// bu kodu eklediginde bu kod seri olarak bir kullanicinin tweetlerini
 		// cekiyo.
 
-		System.out.println(total);
+		//System.out.println(total);
 		
 
 	}

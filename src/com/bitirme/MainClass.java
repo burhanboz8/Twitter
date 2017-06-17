@@ -46,6 +46,8 @@ public class MainClass {
 			try{
 				found = dbhelp.searchUser(userName);
 				if (found == -1){
+				    // TODO neden 1 kullanicinin 10 kere tweetlerini cekiyo ?
+                    // TODO kullaniciya update edip ana yere gecirirken tweet degerlerini de al.
                     TwitterUser user = fetcher.getUser(userName);
                     displayName = user.getDisplayName();
                     String arffFilePath = PrepareData.createUserFile(user);

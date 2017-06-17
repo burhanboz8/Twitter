@@ -1,0 +1,32 @@
+@relation 406100
+
+@attribute follower numeric
+@attribute followed numeric
+@attribute favcount numeric
+@attribute defaultimage {false,true}
+@attribute lengthUserName numeric
+@attribute lengthDescName numeric
+@attribute ratioFollowerFollowed numeric
+@attribute getReputation numeric
+@attribute AgeOfAccount numeric
+@attribute FollowingRate numeric
+@attribute CountOfTweets numeric
+@attribute NumberOfTPerDay numeric
+@attribute AvgLinkCount numeric
+@attribute AvgRTCount numeric
+@attribute AvgHTCount numeric
+@attribute AvgFavCount numeric
+@attribute AvgDDifference numeric
+@attribute AvgNOfChars numeric
+@attribute AvgNOfWords numeric
+@attribute AvgNOfCapitalization numeric
+@attribute AvgNOfQuestionMark numeric
+@attribute AvgNOfExclamationMark numeric
+@attribute AvgNOfDotMark numeric
+@attribute AvgMaxWordLength numeric
+@attribute AvgNOfWhiteSpaces numeric
+@attribute AvgMeanWordLength numeric
+@attribute Type {Human,Bot}
+
+@data
+3873711,16391,313,false,20,157,236.0,0.9957865,56421,68.65725527729037,64251,27.34085,0.44,412.05133,0.01,945.1227,1.49750976E9,109.25,15.73,73.91,0.07,0.04,3.64,22.63,10.6,9.185693,?

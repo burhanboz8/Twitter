@@ -37,7 +37,7 @@ public class ModelUpdater extends Thread {
         while(true){
             System.out.println("Update started!");
             lock = true;
-            //TODO Update model
+            //TODO Delete table values in temporary tweets table§
             String filePathCsv = null;
             String filePathArff = null;
             try {
