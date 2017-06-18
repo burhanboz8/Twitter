@@ -198,7 +198,7 @@ public class Fetcher {
 			Paging pagin = new Paging(++twitterPage, 100); // bir seferinde 100
 			Tweet tweet = new Tweet(); // tweet aliyo 
 			
-			System.out.println(userName);
+			//System.out.println(userName);
 			status = twitter.getUserTimeline(userName, pagin);
 
 			for (i = 0; i < status.size(); i++) {

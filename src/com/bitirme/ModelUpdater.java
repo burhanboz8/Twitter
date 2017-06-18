@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public class ModelUpdater extends Thread {
     boolean lock = false;
-    private static final long DELAY = 60*10*1000;//10 saniye TODO saniyeyi duzelt
+    private static final long DELAY = 60*10*1000;//10 dakika TODO saniyeyi duzelt
     private int threshold = 10;// kullanicilarin veritabani tablosundaki farki threshold oldugunda modele ekle yoksa feedbackte birak
     public boolean isLock(){
         return lock;

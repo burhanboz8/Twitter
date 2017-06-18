@@ -127,8 +127,11 @@ public class DatabaseHelper {
 	public int save(TwitterUser user) throws SQLException {
 		PreparedStatement st = conn.prepareStatement("insert into User(name,type,follower,followed,favCount,"
 				+ "location,isDefaultImage,twitterId,lengthUserName,lengthDescriptionName,ratioFollowerFollowed,"
-				+ "reputationOfUser,ageOfAccount,followingRate,countOfTweets,numberOfTPerDay,numberOfTPerWeek) "
-				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+				+ "reputationOfUser,ageOfAccount,followingRate,countOfTweets,numberOfTPerDay,numberOfTPerWeek," +
+						"avgLinkCount,avgRTCount,avgHTCount,avgFavCount,avgDDifference,avgNofChars,avgNofWords," +
+						"avgNofCapitalization,avgNofQuestionMark,avgNofExclamationMark,avgNofDotMark," +
+						"avgMaxWordLength,avgNofWhiteSpaces,avgMeanWordLength) "
+				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS);
 		st.setString(1, user.getName());
 		st.setBoolean(2, user.getType().getBoolean());
@@ -147,6 +150,22 @@ public class DatabaseHelper {
 		st.setInt(15, user.getCountOfTweets());
 		st.setFloat(16, user.getNumberOfTPerDay());
 		st.setFloat(17, user.getNumberOfTPerWeek());
+		st.setFloat(18,user.getAvgLinkCount());
+
+		st.setFloat(19,user.getAvgRTCount());
+		st.setFloat(20,user.getAvgHTCount());
+		st.setFloat(21,user.getAvgFavCount());
+		st.setFloat(22,user.getAvgDDifference());
+		st.setFloat(23,user.getAvgNofChars());
+		st.setFloat(24,user.getAvgNofWords());
+		st.setFloat(25,user.getAvgNofCapitalization());
+		st.setFloat(26,user.getAvgNofQuestionMark());
+		st.setFloat(27,user.getAvgNofExclamationMark());
+		st.setFloat(28,user.getAvgNofDotMark());
+		st.setFloat(29,user.getAvgMaxWordLength());
+		st.setFloat(30,user.getAvgNofWhiteSpaces());
+		st.setFloat(31,user.getAvgMeanWordLength());
+
 		st.executeUpdate();
 		ResultSet rs = st.getGeneratedKeys();
 		if (rs.next()) {
@@ -158,10 +177,12 @@ public class DatabaseHelper {
 
 	public List<TwitterUser> getUsers() throws SQLException{
 		Statement st= conn.createStatement();
+		DatabaseHelper dbhelp = new DatabaseHelper();
 		List<TwitterUser> list = new ArrayList<>();
 		ResultSet set = st.executeQuery("Select * from User");
 		while(set.next()){
 			//int id = set.getInt(0);
+			String userName = set.getString(2);
 			int follower = set.getInt(4);
 			int followed = set.getInt(5);
 			int favCount = set.getInt(6);
@@ -181,20 +202,36 @@ public class DatabaseHelper {
 			}else{
 				 type1 = UserType.Bot;
 			}
-			float avgLinkCount = set.getFloat(18);
-			float avgRTCount = set.getFloat(19);
-			float avgHTCount = set.getFloat(20);
-			float avgFavCount = set.getFloat(21);
-			float avgDDifference = set.getFloat(22);
-			float avgNofChars = set.getFloat(23);
-			float avgNofWords = set.getFloat(24);
-			float avgNofCapitalization = set.getFloat(25);
-			float avgNofQuestionMark = set.getFloat(26);
-			float avgNofExclamationMark = set.getFloat(27);
-			float avgNofDotMark = set.getFloat(28);
-			float avgMaxWordLength = set.getFloat(29);
-			float avgNofWhiteSpaces = set.getFloat(30);
-			float avgMeanWordLength = set.getFloat(31);
+
+			float avgLinkCount = avgTweets("linkCount",userName);
+			float avgRTCount = avgTweets("rtCount",userName);
+			float avgHTCount = avgTweets("htCount",userName);
+			float avgFavCount = avgTweets("favCount",userName);
+			float avgDDifference = avgTweets("dDifference",userName);
+			float avgNofChars = avgTweets("nofChars",userName);
+			float avgNofWords = avgTweets("nofWords",userName);
+			float avgNofCapitalization = avgTweets("nofCapitalization",userName);
+			float avgNofQuestionMark = avgTweets("nofQuestionMark",userName);
+			float avgNofExclamationMark = avgTweets("nofExclamationMark",userName);
+			float avgNofDotMark = avgTweets("nofDotMark",userName);
+			float avgMaxWordLength = avgTweets("maxWordLength",userName);
+			float avgNofWhiteSpaces = avgTweets("nofWhiteSpace",userName);
+			float avgMeanWordLength = avgTweets("meanWordLength",userName);
+
+			//float avgLinkCount = set.getFloat(18);
+			//float avgRTCount = set.getFloat(19);
+			//float avgHTCount = set.getFloat(20);
+			//float avgFavCount = set.getFloat(21);
+			//float avgDDifference = set.getFloat(22);
+			//float avgNofChars = set.getFloat(23);
+			//float avgNofWords = set.getFloat(24);
+			//float avgNofCapitalization = set.getFloat(25);
+			//float avgNofQuestionMark = set.getFloat(26);
+			//float avgNofExclamationMark = set.getFloat(27);
+			//float avgNofDotMark = set.getFloat(28);
+			//float avgMaxWordLength = set.getFloat(29);
+			//float avgNofWhiteSpaces = set.getFloat(30);
+			//float avgMeanWordLength = set.getFloat(31);
 				
 			
 
@@ -259,7 +296,7 @@ public class DatabaseHelper {
 				count++;
 				
 			}
-			System.out.println(count);
+			//System.out.println(count);
 			writer.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -277,7 +314,7 @@ public class DatabaseHelper {
 		ResultSet rs = st.executeQuery();
 		rs.first();
 			avgValue = rs.getFloat(2);
-			System.out.println(avgValue);
+			//System.out.println(avgValue);
 
 		return avgValue;
 	}
